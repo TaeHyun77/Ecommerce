@@ -7,6 +7,8 @@ dependencies {
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+	// order-service 등 외부 서비스 호출용 RestClient - spring-boot-starter-webmvc에는 포함되지 않음
+	implementation 'org.springframework.boot:spring-boot-restclient'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'

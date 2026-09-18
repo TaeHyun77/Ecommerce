@@ -11,4 +11,10 @@ public class GlobalExceptionHandler {
         AuthErrorCode errorCode = e.getErrorCode();
         return ResponseEntity.status(errorCode.getStatus()).body(ErrorResponse.from(errorCode));
     }
+
+    @ExceptionHandler(MemberException.class)
+    public ResponseEntity<ErrorResponse> handleMemberException(MemberException e) {
+        MemberErrorCode errorCode = e.getErrorCode();
+        return ResponseEntity.status(errorCode.getStatus()).body(ErrorResponse.from(errorCode));
+    }
 }
