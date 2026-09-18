@@ -18,6 +18,12 @@ dependencies {
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
 
+	// 서킷 브레이커 - Spring Boot BOM이 관리하지 않아 버전을 직접 지정
+	implementation 'io.github.resilience4j:resilience4j-spring-boot4:2.4.0'
+	// 없으면 @CircuitBreaker가 조용히 무시됨 - resilience4j-spring6에 AOP 의존성이 없음
+	implementation 'org.springframework.boot:spring-boot-starter-aspectj'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
 }
