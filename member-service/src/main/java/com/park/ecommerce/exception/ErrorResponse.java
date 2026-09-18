@@ -15,4 +15,8 @@ public class ErrorResponse {
     public static ErrorResponse from(AuthErrorCode errorCode) {
         return new ErrorResponse(errorCode.name(), errorCode.getMessage());
     }
+
+    public static ErrorResponse from(MemberErrorCode errorCode) {
+        return new ErrorResponse(errorCode.name(), errorCode.getMessage());
+    }
 }
