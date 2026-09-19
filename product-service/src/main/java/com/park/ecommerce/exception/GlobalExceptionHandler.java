@@ -1,5 +1,6 @@
 package com.park.ecommerce.exception;
 
+import org.springframework.context.MessageSourceResolvable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @RestControllerAdvice
@@ -45,5 +47,16 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleInvalidParameterException(Exception e) {
         ProductErrorCode errorCode = ProductErrorCode.INVALID_INPUT;
         return ResponseEntity.status(errorCode.getStatus()).body(ErrorResponse.from(errorCode));
+    }
+
+    // @RequestParam에 붙인 제약(@Min, @Max 등) 위반 - 첫 번째 검증 메시지를 그대로 전달
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity<ErrorResponse> handleMethodValidationException(HandlerMethodValidationException e) {
+        ProductErrorCode errorCode = ProductErrorCode.INVALID_INPUT;
+        String message = e.getAllErrors().stream()
+                .findFirst()
+                .map(MessageSourceResolvable::getDefaultMessage)
+                .orElse(errorCode.getMessage());
+        return ResponseEntity.status(errorCode.getStatus()).body(ErrorResponse.of(errorCode, message));
     }
 }
