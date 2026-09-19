@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 // 검증을 마친 입고 예정 (우리 규격)
-// 예정서 1건당 입고 확정은 1회만 받는다 - 분할 입고는 지원하지 않음
+// 예정서 1건당 입고 확정은 1회만 받음
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -66,7 +66,7 @@ public class InboundExpectation extends BaseTimeEntity {
         return status == InboundExpectationStatus.COMPLETED && Objects.equals(this.receiptNo, receiptNo);
     }
 
-    // quantities: 상품코드별 검수 결과. 빠진 품목은 미입고(0/0)로 기록
+    // quantities : 상품코드별 검수 결과. 빠진 품목은 미입고(0/0)로 기록
     public void receive(String receiptNo, Map<String, ReceivedQuantity> quantities, LocalDateTime now) {
         if (status == InboundExpectationStatus.COMPLETED) {
             throw new InboundException(InboundErrorCode.ALREADY_RECEIVED);

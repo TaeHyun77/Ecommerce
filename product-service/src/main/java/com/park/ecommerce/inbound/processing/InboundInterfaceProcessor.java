@@ -49,9 +49,7 @@ public class InboundInterfaceProcessor {
     @Transactional
     public void process(Long interfaceId) {
         InboundInterface inboundInterface = inboundInterfaceRepository.findById(interfaceId).orElseThrow();
-        if (!inboundInterface.isPending()) {
-            return;
-        }
+        if (!inboundInterface.isPending()) return;
 
         InboundExpectationRequest request;
         try {
@@ -79,6 +77,7 @@ public class InboundInterfaceProcessor {
                 .supplierCode(request.supplierCode())
                 .expectedArrivalAt(request.expectedArrivalAt())
                 .build();
+
         request.lines().forEach(line ->
                 expectation.addLine(productIds.get(line.productCode()), line.productCode(), line.quantity()));
 
