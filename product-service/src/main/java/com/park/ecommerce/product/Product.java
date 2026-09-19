@@ -37,9 +37,6 @@ public class Product extends BaseTimeEntity {
     @Column(nullable = false)
     private Integer price; // 판매가 (원)
 
-    @Column(nullable = false)
-    private Integer stockQuantity;
-
     private String thumbnailUrl;
 
     @Column(nullable = false)
@@ -48,11 +45,10 @@ public class Product extends BaseTimeEntity {
     @Builder
     private Product(
             String productCode, String name, String brand, String description,
-            StorageType storageType, Integer price, Integer stockQuantity,
+            StorageType storageType, Integer price,
             String thumbnailUrl, Long categoryId
     ) {
         validatePrice(price);
-        validateStockQuantity(stockQuantity);
         validateCategoryId(categoryId);
 
         this.productCode = productCode;
@@ -62,24 +58,13 @@ public class Product extends BaseTimeEntity {
         this.status = ProductStatus.ON_SALE; // 상태는 판매중으로 고정
         this.storageType = storageType;
         this.price = price;
-        this.stockQuantity = stockQuantity;
         this.thumbnailUrl = thumbnailUrl;
         this.categoryId = categoryId;
-    }
-
-    public boolean isSoldOut() {
-        return stockQuantity == 0;
     }
 
     private static void validatePrice(Integer price) {
         if (price == null || price < 0) {
             throw new IllegalArgumentException("판매가는 0원 이상이어야 합니다.");
-        }
-    }
-
-    private static void validateStockQuantity(Integer stockQuantity) {
-        if (stockQuantity == null || stockQuantity < 0) {
-            throw new IllegalArgumentException("재고 수량은 0개 이상이어야 합니다.");
         }
     }
 
