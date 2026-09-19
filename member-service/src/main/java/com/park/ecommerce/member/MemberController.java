@@ -1,5 +1,6 @@
 package com.park.ecommerce.member;
 
+import com.park.ecommerce.member.dto.MemberResponse;
 import com.park.ecommerce.order.MemberOrderService;
 import com.park.ecommerce.order.dto.MemberOrderResponse;
 import lombok.RequiredArgsConstructor;
@@ -16,14 +17,16 @@ import java.util.List;
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
 public class MemberController {
+    private final MemberService memberService;
     private final MemberOrderService memberOrderService;
 
-    @GetMapping("/test")
-    public String test() {
-        log.info("테스트 요청 처리 -> 응답: member");
-        return "member";
+    // 회원 정보 조회
+    @GetMapping("/me")
+    public MemberResponse getMyInfo(@AuthenticationPrincipal Long memberId) {
+        return memberService.getMyInfo(memberId);
     }
 
+    // 특정 회원의 주문 목록 조회
     @GetMapping("/me/orders")
     public List<MemberOrderResponse> getMyOrders(@AuthenticationPrincipal Long memberId) {
         return memberOrderService.getMyOrders(memberId);
