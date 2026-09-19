@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-// WMS 연동용 내부 API - 실제 WMS가 없어 검수 완료 통보를 이 API 호출로 흉내 낸다. 게이트웨이에 노출하지 않음
+// WMS 연동을 대신하는 내부 API - 실제 WMS가 없어 검수 완료 요청을 이 API로 대신함
 @RestController
 @RequestMapping("/internal/inbound-receipts")
 @RequiredArgsConstructor

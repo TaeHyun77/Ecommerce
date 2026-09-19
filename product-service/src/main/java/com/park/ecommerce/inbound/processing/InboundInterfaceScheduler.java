@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.List;
 
-// 단일 인스턴스를 가정 - 여러 대를 띄우면 같은 행을 동시에 처리할 수 있어 SELECT ... FOR UPDATE SKIP LOCKED가 필요
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -21,6 +20,7 @@ public class InboundInterfaceScheduler {
     private final InboundInterfaceRepository inboundInterfaceRepository;
     private final InboundInterfaceProcessor inboundInterfaceProcessor;
 
+    // 주기마다 처리할 차례가 된 입고 예정서를 최대 100건 가져와 한 건씩 입고 예정으로 변환
     @Scheduled(fixedDelayString = "${inbound.interface.poll-delay}")
     public void processPendingInterfaces() {
         List<Long> targetIds = inboundInterfaceRepository.findProcessTargetIds(

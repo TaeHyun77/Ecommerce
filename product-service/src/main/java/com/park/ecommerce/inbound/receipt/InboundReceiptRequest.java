@@ -33,6 +33,8 @@ public record InboundReceiptRequest(
     ) {
     }
 
+    // 요청 한 건에 같은 상품코드가 두 줄 이상 있는지 검사
+    // 중복이 있으면 요청을 400으로 거절해서, 입고 확정 때 수량이 엉뚱한 줄에 매칭되거나 재고가 두 번 반영되는 일을 막음
     public boolean hasDuplicateProduct() {
         return lines.stream().map(Line::productCode).distinct().count() != lines.size();
     }

@@ -12,7 +12,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 // 공급사가 보낸 입고 예정서 원본과 처리 상태
-// 수신과 처리를 분리하고, 기반 정보(상품)가 준비될 때까지 재시도하기 위한 대기열 역할도 함께 한다.
+// 수신과 처리를 분리하고, 기반 정보(상품)가 준비될 때까지 재시도하기 위한 대기열 역할
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
