@@ -1,5 +1,6 @@
 package com.park.ecommerce.member;
 
+import com.park.ecommerce.auth.RefreshTokenRepository;
 import com.park.ecommerce.exception.AuthErrorCode;
 import com.park.ecommerce.exception.AuthException;
 import com.park.ecommerce.member.domain.Member;
@@ -19,12 +20,16 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class MemberServiceTest {
 
     @Mock
     private MemberRepository memberRepository;
+
+    @Mock
+    private RefreshTokenRepository refreshTokenRepository;
 
     @InjectMocks
     private MemberService memberService;
@@ -52,6 +57,33 @@ class MemberServiceTest {
                 .isInstanceOf(AuthException.class)
                 .extracting(e -> ((AuthException) e).getErrorCode())
                 .isEqualTo(AuthErrorCode.MEMBER_NOT_FOUND);
+    }
+
+    @Test
+    @DisplayName("탈퇴하면 상태가 WITHDRAWN으로 바뀌고 프로필이 익명화되며 Refresh Token이 삭제된다")
+    void withdrawsMemberAndDeletesRefreshToken() {
+        Member member = member();
+        given(memberRepository.findById(1L)).willReturn(Optional.of(member));
+
+        memberService.withdraw(1L);
+
+        assertThat(member.isWithdrawn()).isTrue();
+        assertThat(member.getNickname()).isEqualTo("탈퇴한 회원");
+        assertThat(member.getProfileImageUrl()).isNull();
+        verify(refreshTokenRepository).deleteByMemberId(1L);
+    }
+
+    @Test
+    @DisplayName("이미 탈퇴한 회원을 다시 탈퇴시키면 예외를 던진다")
+    void throwsExceptionWhenAlreadyWithdrawn() {
+        Member member = member();
+        member.withdraw();
+        given(memberRepository.findById(1L)).willReturn(Optional.of(member));
+
+        assertThatThrownBy(() -> memberService.withdraw(1L))
+                .isInstanceOf(AuthException.class)
+                .extracting(e -> ((AuthException) e).getErrorCode())
+                .isEqualTo(AuthErrorCode.ALREADY_WITHDRAWN_MEMBER);
     }
 
     private static Member member() {

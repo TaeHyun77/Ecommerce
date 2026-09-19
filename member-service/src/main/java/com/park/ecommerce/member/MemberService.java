@@ -1,5 +1,6 @@
 package com.park.ecommerce.member;
 
+import com.park.ecommerce.auth.RefreshTokenRepository;
 import com.park.ecommerce.exception.AuthErrorCode;
 import com.park.ecommerce.exception.AuthException;
 import com.park.ecommerce.member.domain.Member;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     // 회원 정보 조회
     @Transactional(readOnly = true)
@@ -21,5 +23,18 @@ public class MemberService {
                 .orElseThrow(() -> new AuthException(AuthErrorCode.MEMBER_NOT_FOUND));
 
         return MemberResponse.from(member);
+    }
+
+    @Transactional
+    public void withdraw(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new AuthException(AuthErrorCode.MEMBER_NOT_FOUND));
+
+        if (member.isWithdrawn()) {
+            throw new AuthException(AuthErrorCode.ALREADY_WITHDRAWN_MEMBER);
+        }
+
+        member.withdraw();
+        refreshTokenRepository.deleteByMemberId(memberId);
     }
 }
