@@ -3,9 +3,20 @@ plugins {
 }
 
 dependencies {
+	implementation project(':common')
+
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	// product-service 호출용 RestClient - spring-boot-starter-webmvc에는 포함되지 않음
+	implementation 'org.springframework.boot:spring-boot-restclient'
 	runtimeOnly 'com.mysql:mysql-connector-j'
+
+	// 서킷 브레이커 - Spring Boot BOM이 관리하지 않아 버전을 직접 지정
+	implementation 'io.github.resilience4j:resilience4j-spring-boot4:2.4.0'
+	// 없으면 @CircuitBreaker가 조용히 무시됨 - resilience4j-spring6에 AOP 의존성이 없음
+	implementation 'org.springframework.boot:spring-boot-starter-aspectj'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
