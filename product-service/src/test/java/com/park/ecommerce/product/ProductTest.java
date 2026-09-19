@@ -34,36 +34,10 @@ class ProductTest {
         assertThatCode(() -> validProduct().price(0).build()).doesNotThrowAnyException();
     }
 
-    @ParameterizedTest
-    @NullSource
-    @ValueSource(ints = -1)
-    @DisplayName("재고 수량이 없거나 음수이면 예외가 발생한다")
-    void rejectsInvalidStockQuantity(Integer stockQuantity) {
-        assertThatIllegalArgumentException().isThrownBy(() -> validProduct().stockQuantity(stockQuantity).build());
-    }
-
-    @Test
-    @DisplayName("재고 수량 0개는 허용한다")
-    void allowsZeroStockQuantity() {
-        assertThatCode(() -> validProduct().stockQuantity(0).build()).doesNotThrowAnyException();
-    }
-
     @Test
     @DisplayName("카테고리가 없으면 예외가 발생한다")
     void rejectsNullCategoryId() {
         assertThatIllegalArgumentException().isThrownBy(() -> validProduct().categoryId(null).build());
-    }
-
-    @Test
-    @DisplayName("재고가 0개이면 품절이다")
-    void isSoldOutWhenStockIsZero() {
-        assertThat(validProduct().stockQuantity(0).build().isSoldOut()).isTrue();
-    }
-
-    @Test
-    @DisplayName("재고가 1개라도 있으면 품절이 아니다")
-    void isNotSoldOutWhenStockRemains() {
-        assertThat(validProduct().stockQuantity(1).build().isSoldOut()).isFalse();
     }
 
     private static Product.ProductBuilder validProduct() {
@@ -72,7 +46,6 @@ class ProductTest {
                 .name("유기농 우유 900ml")
                 .storageType(StorageType.REFRIGERATED)
                 .price(3_000)
-                .stockQuantity(10)
                 .categoryId(1L);
     }
 }

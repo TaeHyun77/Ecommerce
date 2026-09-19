@@ -2,7 +2,7 @@ package com.park.ecommerce.product;
 
 /**
  * 상품 판매 상태
- * 품절은 재고와 어긋나지 않도록 상태로 두지 않고 재고 수량으로 판단 - Product#isSoldOut()
+ * 품절은 재고와 어긋나지 않도록 상태로 두지 않고 재고 수량으로 판단 - Inventory#isSoldOut()
  */
 public enum ProductStatus {
     ON_SALE, // 판매중
