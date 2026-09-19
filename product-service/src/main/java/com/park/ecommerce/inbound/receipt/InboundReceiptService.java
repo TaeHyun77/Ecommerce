@@ -29,7 +29,7 @@ public class InboundReceiptService {
             throw new InboundException(InboundErrorCode.DUPLICATE_LINE_PRODUCT);
         }
 
-        // 비관적 락 - 동시에 들어온 중복 확정은 여기서 대기했다가 아래 멱등 확인에 걸린다
+        // 비관적 락
         InboundExpectation expectation = inboundExpectationRepository.findByAsnNoForUpdate(request.asnNo())
                 .orElseThrow(() -> new InboundException(InboundErrorCode.EXPECTATION_NOT_FOUND));
 
