@@ -10,6 +10,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -32,5 +36,11 @@ public class ProductService {
                 .build());
 
         return ProductResponse.from(product);
+    }
+
+    // 등록되지 않은 상품코드는 결과에서 빠진다 - 호출하는 쪽에서 누락 여부로 미등록을 판단
+    public Map<String, Long> findProductIdsByCodes(Collection<String> productCodes) {
+        return productRepository.findAllByProductCodeIn(productCodes).stream()
+                .collect(Collectors.toMap(Product::getProductCode, Product::getId));
     }
 }
