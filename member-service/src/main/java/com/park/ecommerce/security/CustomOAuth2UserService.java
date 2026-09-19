@@ -30,10 +30,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return new CustomOAuth2User(member.getId(), member.getRole(), oAuth2User.getAttributes());
     }
 
-    private Member saveOrUpdate(Provider provider, OAuthAttributes attributes) {
+    Member saveOrUpdate(Provider provider, OAuthAttributes attributes) {
         return memberRepository.findByProviderAndProviderId(provider, attributes.getProviderId())
                 .map(member -> {
-                    member.updateProfile(attributes.getNickname(), attributes.getProfileImageUrl());
+                    if (member.isWithdrawn()) {
+                        member.reactivate(attributes.getNickname(), attributes.getProfileImageUrl());
+                    } else {
+                        member.updateProfile(attributes.getNickname(), attributes.getProfileImageUrl());
+                    }
                     return member;
                 })
                 .orElseGet(() -> memberRepository.save(

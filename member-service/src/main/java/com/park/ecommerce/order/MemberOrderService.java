@@ -11,6 +11,7 @@ import java.util.List;
 public class MemberOrderService {
     private final OrderApiClient orderApiClient;
 
+    // 특정 회원의 주문 목록 조회
     public List<MemberOrderResponse> getMyOrders(Long memberId) {
         return orderApiClient.findOrdersByMemberId(memberId);
     }
