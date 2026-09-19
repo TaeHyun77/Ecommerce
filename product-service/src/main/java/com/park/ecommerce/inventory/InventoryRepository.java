@@ -4,7 +4,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Collection;
+import java.util.List;
+
 public interface InventoryRepository extends JpaRepository<Inventory, Long> {
+    List<Inventory> findByProductIdIn(Collection<Long> productIds);
+
     // 조회 후 더해서 저장하면 주문 차감 등 동시 변경이 덮어써질 수 있어 DB에서 원자적으로 증가
     // 벌크 연산은 감사(Auditing)를 거치지 않으므로 updatedAt을 직접 갱신
     @Modifying

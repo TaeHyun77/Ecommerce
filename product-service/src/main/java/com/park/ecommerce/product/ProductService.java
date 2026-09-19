@@ -6,11 +6,13 @@ import com.park.ecommerce.inventory.Inventory;
 import com.park.ecommerce.inventory.InventoryRepository;
 import com.park.ecommerce.product.dto.ProductCreateRequest;
 import com.park.ecommerce.product.dto.ProductResponse;
+import com.park.ecommerce.product.dto.ProductSummaryResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -36,6 +38,17 @@ public class ProductService {
                 .build());
 
         return ProductResponse.from(product);
+    }
+
+    // 등록되지 않은 상품 식별자는 결과에서 빠진다 - 호출하는 쪽에서 누락 여부로 미등록을 판단
+    public List<ProductSummaryResponse> findSummaries(Collection<Long> productIds) {
+        Map<Long, Integer> quantities = inventoryRepository.findByProductIdIn(productIds).stream()
+                .collect(Collectors.toMap(Inventory::getProductId, Inventory::getQuantity));
+
+        return productRepository.findAllById(productIds).stream()
+                // 재고 행은 상품 등록 시 함께 생성되지만, 없더라도 조회는 막지 않고 품절로 취급
+                .map(product -> ProductSummaryResponse.of(product, quantities.getOrDefault(product.getId(), 0)))
+                .toList();
     }
 
     // 등록되지 않은 상품코드는 결과에서 빠진다 - 호출하는 쪽에서 누락 여부로 미등록을 판단
